@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SettingsPage extends StatefulWidget {
+import '../../app.dart';
+import '../../core/app_theme.dart';
+import '../../core/i18n/app_localizations_delegate.dart';
+
+class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(localeProvider);
+    final themeMode = ref.watch(themeModeProvider);
 
-class _SettingsPageState extends State<SettingsPage> {
-  String _selectedLanguage = 'fr';
-  String _selectedTheme = 'system';
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Paramètres'),
       ),
       body: ListView(
         children: [
-          _buildSectionHeader('Apparence'),
-          
+          _buildSectionHeader(context, 'Apparence'),
+
           ListTile(
             leading: const Icon(Icons.language),
             title: const Text('Langue'),
-            subtitle: Text(_selectedLanguage == 'fr' ? 'Français' : 'English'),
+            subtitle: Text(locale.languageCode == 'fr' ? 'Français' : 'English'),
             trailing: DropdownButton<String>(
-              value: _selectedLanguage,
+              value: locale.languageCode,
               underline: const SizedBox(),
               items: const [
                 DropdownMenuItem(value: 'fr', child: Text('Français')),
@@ -34,9 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
               onChanged: (value) {
                 if (value != null) {
-                  setState(() {
-                    _selectedLanguage = value;
-                  });
+                  ref.read(localeProvider.notifier).state = Locale(value);
                 }
               },
             ),
@@ -45,20 +43,18 @@ class _SettingsPageState extends State<SettingsPage> {
           ListTile(
             leading: const Icon(Icons.palette),
             title: const Text('Thème'),
-            subtitle: Text(_getThemeLabel(_selectedTheme)),
-            trailing: DropdownButton<String>(
-              value: _selectedTheme,
+            subtitle: Text(_getThemeLabel(themeMode)),
+            trailing: DropdownButton<AppThemeMode>(
+              value: themeMode,
               underline: const SizedBox(),
               items: const [
-                DropdownMenuItem(value: 'light', child: Text('Clair')),
-                DropdownMenuItem(value: 'dark', child: Text('Sombre')),
-                DropdownMenuItem(value: 'system', child: Text('Système')),
+                DropdownMenuItem(value: AppThemeMode.light, child: Text('Clair')),
+                DropdownMenuItem(value: AppThemeMode.dark, child: Text('Sombre')),
+                DropdownMenuItem(value: AppThemeMode.system, child: Text('Système')),
               ],
               onChanged: (value) {
                 if (value != null) {
-                  setState(() {
-                    _selectedTheme = value;
-                  });
+                  ref.read(themeModeProvider.notifier).state = value;
                 }
               },
             ),
@@ -66,7 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
           const Divider(),
 
-          _buildSectionHeader('À propos'),
+          _buildSectionHeader(context, 'À propos'),
 
           const ListTile(
             leading: Icon(Icons.info),
@@ -78,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(BuildContext context, String title) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Text(
@@ -91,14 +87,13 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  String _getThemeLabel(String theme) {
+  String _getThemeLabel(AppThemeMode theme) {
     switch (theme) {
-      case 'light':
+      case AppThemeMode.light:
         return 'Clair';
-      case 'dark':
+      case AppThemeMode.dark:
         return 'Sombre';
-      case 'system':
-      default:
+      case AppThemeMode.system:
         return 'Système';
     }
   }
