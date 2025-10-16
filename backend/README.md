@@ -1,12 +1,24 @@
 # ReelList Backend
 
-## 🚀 Lancer Supabase
+## 🚀 Installation & Lancement
 
 ### Prérequis
 - Docker Desktop installé et en cours d'exécution
 - Supabase CLI installé (`brew install supabase/tap/supabase`)
 
-### Commandes
+### Premier lancement (ou après un `git pull`)
+
+```bash
+# 1. Démarrer Supabase
+supabase start
+
+# 2. Appliquer les migrations (créer les tables)
+supabase db reset
+```
+
+> **💡 Important** : À chaque `git pull` qui contient de nouvelles migrations, relancer `supabase db reset` pour mettre à jour la base de données.
+
+### Commandes quotidiennes
 
 #### Démarrer Supabase
 ```bash
