@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/widgets/widgets.dart';
+import '../../core/i18n/l10n_extensions.dart';
 import 'movies_vm.dart';
 
 class MoviesPage extends ConsumerWidget {
@@ -14,7 +15,7 @@ class MoviesPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Films Populaires'),
+        title: Text(context.tr('popularMovies')),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -32,7 +33,7 @@ class MoviesPage extends ConsumerWidget {
     MoviesViewModel vm,
   ) {
     if (state.isLoading) {
-      return const Loader(message: 'Chargement des films populaires...');
+      return Loader(message: context.tr('loadingMovies'));
     }
 
     if (state.error != null) {
@@ -43,9 +44,9 @@ class MoviesPage extends ConsumerWidget {
     }
 
     if (state.movies.isEmpty) {
-      return const EmptyStateView(
+      return EmptyStateView(
         icon: Icons.movie_outlined,
-        message: 'Aucun film disponible',
+        message: context.tr('noMovies'),
       );
     }
 
@@ -148,7 +149,8 @@ class MoviesPage extends ConsumerWidget {
                     child: ElevatedButton.icon(
                       onPressed: () => _addToFavorites(context, movie, vm),
                       icon: const Icon(Icons.add, size: 16),
-                      label: const Text('Favoris', style: TextStyle(fontSize: 12)),
+                      label: Text(context.tr('addFav'),
+                          style: const TextStyle(fontSize: 12)),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                       ),
@@ -173,7 +175,7 @@ class MoviesPage extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${movie.title} ajouté aux favoris'),
+            content: Text('${movie.title} ${context.tr('addedToFavorites')}'),
             backgroundColor: Colors.green,
           ),
         );
@@ -182,7 +184,7 @@ class MoviesPage extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur: $e'),
+            content: Text('${context.tr('error')}: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -227,7 +229,7 @@ class MoviesPage extends ConsumerWidget {
                         ),
                         const SizedBox(height: 8),
                         if (movie.releaseYear != null)
-                          Text('Année: ${movie.releaseYear}'),
+                          Text('${context.tr('year')}: ${movie.releaseYear}'),
                         if (movie.voteAverage != null)
                           Row(
                             children: [
@@ -244,7 +246,7 @@ class MoviesPage extends ConsumerWidget {
               const SizedBox(height: 16),
               if (movie.overview != null && movie.overview!.isNotEmpty) ...[
                 Text(
-                  'Synopsis',
+                  context.tr('synopsis'),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),

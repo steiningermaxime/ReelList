@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/debouncer.dart';
 import '../../core/widgets/widgets.dart';
+import '../../core/i18n/l10n_extensions.dart';
 import 'search_vm.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
@@ -30,7 +31,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Recherche'),
+        title: Text(context.tr('search')),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -38,9 +39,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           children: [
             TextField(
               controller: _searchController,
-              decoration: const InputDecoration(
-                hintText: 'Rechercher des films...',
-                prefixIcon: Icon(Icons.search),
+              decoration: InputDecoration(
+                hintText: context.tr('searchMovies'),
+                prefixIcon: const Icon(Icons.search),
               ),
               onChanged: (value) {
                 _debouncer.run(() => vm.search(value));
@@ -58,7 +59,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   Widget _buildContent(SearchState state, SearchViewModel vm) {
     if (state.isLoading) {
-      return const Loader(message: 'Recherche en cours...');
+      return Loader(message: context.tr('loadingSearch'));
     }
 
     if (state.error != null) {
@@ -69,16 +70,16 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     }
 
     if (state.query.isEmpty) {
-      return const EmptyStateView(
+      return EmptyStateView(
         icon: Icons.search,
-        message: 'Recherchez vos films préférés',
+        message: context.tr('searchYourFavorites'),
       );
     }
 
     if (state.movies.isEmpty) {
-      return const EmptyStateView(
+      return EmptyStateView(
         icon: Icons.movie_outlined,
-        message: 'Aucun film trouvé',
+        message: context.tr('noResults'),
       );
     }
 
@@ -134,7 +135,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             trailing: IconButton(
               icon: const Icon(Icons.add),
               onPressed: () => _addToFavorites(movie, vm),
-              tooltip: 'Ajouter aux favoris',
+              tooltip: context.tr('addToFavorites'),
             ),
             onTap: () => _showMovieDetails(movie),
           ),
@@ -152,7 +153,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${movie.title} ajouté aux favoris'),
+            content: Text('${movie.title} ${context.tr('addedToFavorites')}'),
             backgroundColor: Colors.green,
           ),
         );
@@ -161,7 +162,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur: $e'),
+            content: Text('${context.tr('error')}: $e'),
             backgroundColor: Colors.red,
           ),
         );

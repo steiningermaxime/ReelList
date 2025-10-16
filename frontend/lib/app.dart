@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/app_router.dart';
 import 'core/app_theme.dart';
 import 'core/i18n/language_provider.dart';
+import 'core/i18n/app_localizations.dart';
 
 final themeModeProvider = StateProvider<AppThemeMode>((ref) => AppThemeMode.system);
 
@@ -29,6 +30,7 @@ class ReelListApp extends ConsumerWidget {
         Locale('en'),
       ],
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

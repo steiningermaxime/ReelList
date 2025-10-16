@@ -8,8 +8,8 @@ import '../features/favorites/favorites_page.dart';
 import '../features/settings/settings_page.dart';
 
 class AppRoutes {
-  static const String search = '/search';
   static const String movies = '/movies';
+  static const String search = '/search';
   static const String favorites = '/favorites';
   static const String settings = '/settings';
   static const String favoriteEdit = '/favorite/:id/edit';
@@ -17,20 +17,20 @@ class AppRoutes {
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: AppRoutes.search,
+    initialLocation: AppRoutes.movies,
     routes: [
       ShellRoute(
         builder: (context, state, child) => MainShell(child: child),
         routes: [
           GoRoute(
-            path: AppRoutes.search,
-            name: 'search',
-            builder: (context, state) => const SearchPage(),
-          ),
-          GoRoute(
             path: AppRoutes.movies,
             name: 'movies',
             builder: (context, state) => const MoviesPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.search,
+            name: 'search',
+            builder: (context, state) => const SearchPage(),
           ),
           GoRoute(
             path: AppRoutes.favorites,
@@ -79,20 +79,20 @@ class BottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentLocation = GoRouterState.of(context).matchedLocation;
-    
+
     return NavigationBar(
       selectedIndex: _getSelectedIndex(currentLocation),
       onDestinationSelected: (index) => _onDestinationSelected(context, index),
       destinations: const [
         NavigationDestination(
-          icon: Icon(Icons.search),
-          selectedIcon: Icon(Icons.search),
-          label: 'Recherche',
-        ),
-        NavigationDestination(
           icon: Icon(Icons.movie_outlined),
           selectedIcon: Icon(Icons.movie),
           label: 'Films',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.search),
+          selectedIcon: Icon(Icons.search),
+          label: 'Recherche',
         ),
         NavigationDestination(
           icon: Icon(Icons.favorite_border),
@@ -110,9 +110,9 @@ class BottomNavigation extends StatelessWidget {
 
   int _getSelectedIndex(String location) {
     switch (location) {
-      case AppRoutes.search:
-        return 0;
       case AppRoutes.movies:
+        return 0;
+      case AppRoutes.search:
         return 1;
       case AppRoutes.favorites:
         return 2;
@@ -126,10 +126,10 @@ class BottomNavigation extends StatelessWidget {
   void _onDestinationSelected(BuildContext context, int index) {
     switch (index) {
       case 0:
-        context.go(AppRoutes.search);
+        context.go(AppRoutes.movies);
         break;
       case 1:
-        context.go(AppRoutes.movies);
+        context.go(AppRoutes.search);
         break;
       case 2:
         context.go(AppRoutes.favorites);

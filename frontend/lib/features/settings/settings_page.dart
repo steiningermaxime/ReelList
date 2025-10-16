@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app.dart';
 import '../../core/app_theme.dart';
 import '../../core/i18n/language_provider.dart';
+import '../../core/i18n/l10n_extensions.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -15,22 +16,24 @@ class SettingsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Paramètres'),
+        title: Text(context.tr('settings')),
       ),
       body: ListView(
         children: [
-          _buildSectionHeader(context, 'Apparence'),
+          _buildSectionHeader(context, context.tr('appearance')),
 
           ListTile(
             leading: const Icon(Icons.language),
-            title: const Text('Langue'),
-            subtitle: Text(locale.languageCode == 'fr' ? 'Français' : 'English'),
+            title: Text(context.tr('language')),
+            subtitle: Text(locale.languageCode == 'fr'
+                ? context.tr('french')
+                : context.tr('english')),
             trailing: DropdownButton<String>(
               value: locale.languageCode,
               underline: const SizedBox(),
-              items: const [
-                DropdownMenuItem(value: 'fr', child: Text('Français')),
-                DropdownMenuItem(value: 'en', child: Text('English')),
+              items: [
+                DropdownMenuItem(value: 'fr', child: Text(context.tr('french'))),
+                DropdownMenuItem(value: 'en', child: Text(context.tr('english'))),
               ],
               onChanged: (value) {
                 if (value != null) {
@@ -42,15 +45,24 @@ class SettingsPage extends ConsumerWidget {
 
           ListTile(
             leading: const Icon(Icons.palette),
-            title: const Text('Thème'),
-            subtitle: Text(_getThemeLabel(themeMode)),
+            title: Text(context.tr('theme')),
+            subtitle: Text(_getThemeLabel(context, themeMode)),
             trailing: DropdownButton<AppThemeMode>(
               value: themeMode,
               underline: const SizedBox(),
-              items: const [
-                DropdownMenuItem(value: AppThemeMode.light, child: Text('Clair')),
-                DropdownMenuItem(value: AppThemeMode.dark, child: Text('Sombre')),
-                DropdownMenuItem(value: AppThemeMode.system, child: Text('Système')),
+              items: [
+                DropdownMenuItem(
+                  value: AppThemeMode.light,
+                  child: Text(context.tr('light')),
+                ),
+                DropdownMenuItem(
+                  value: AppThemeMode.dark,
+                  child: Text(context.tr('dark')),
+                ),
+                DropdownMenuItem(
+                  value: AppThemeMode.system,
+                  child: Text(context.tr('system')),
+                ),
               ],
               onChanged: (value) {
                 if (value != null) {
@@ -62,12 +74,12 @@ class SettingsPage extends ConsumerWidget {
 
           const Divider(),
 
-          _buildSectionHeader(context, 'À propos'),
+          _buildSectionHeader(context, context.tr('about')),
 
-          const ListTile(
-            leading: Icon(Icons.info),
-            title: Text('Version'),
-            subtitle: Text('1.0.0'),
+          ListTile(
+            leading: const Icon(Icons.info),
+            title: Text(context.tr('version')),
+            subtitle: const Text('1.0.0'),
           ),
         ],
       ),
@@ -87,14 +99,14 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 
-  String _getThemeLabel(AppThemeMode theme) {
+  String _getThemeLabel(BuildContext context, AppThemeMode theme) {
     switch (theme) {
       case AppThemeMode.light:
-        return 'Clair';
+        return context.tr('light');
       case AppThemeMode.dark:
-        return 'Sombre';
+        return context.tr('dark');
       case AppThemeMode.system:
-        return 'Système';
+        return context.tr('system');
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/widgets/widgets.dart';
+import '../../core/i18n/l10n_extensions.dart';
 import '../../data/models/favorite.dart';
 import 'favorites_vm.dart';
 
@@ -52,13 +53,13 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favoris'),
+        title: Text(context.tr('favorites')),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Tous'),
-            Tab(text: 'À voir'),
-            Tab(text: 'Vus'),
+          tabs: [
+            Tab(text: context.tr('all')),
+            Tab(text: context.tr('watchlist')),
+            Tab(text: context.tr('watched')),
           ],
         ),
       ),
@@ -68,7 +69,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
 
   Widget _buildContent(FavoritesState state, FavoritesViewModel vm) {
     if (state.isLoading) {
-      return const Loader(message: 'Chargement...');
+      return Loader(message: context.tr('loading'));
     }
 
     if (state.error != null) {
@@ -114,15 +115,15 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
     switch (filter) {
       case FavoriteStatus.watchlist:
         icon = Icons.bookmark_border;
-        message = 'Aucun film dans votre liste à voir';
+        message = context.tr('noWatchlist');
         break;
       case FavoriteStatus.watched:
         icon = Icons.check_circle_outline;
-        message = 'Aucun film vu';
+        message = context.tr('noWatched');
         break;
       default:
         icon = Icons.favorite_border;
-        message = 'Aucun favori';
+        message = context.tr('noFavorites');
     }
 
     return EmptyStateView(icon: icon, message: message);
@@ -173,7 +174,9 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
                 ],
               ),
             Text(
-              favorite.status == FavoriteStatus.watched ? 'Vu' : 'À voir',
+              favorite.status == FavoriteStatus.watched
+                  ? context.tr('seen')
+                  : context.tr('toWatch'),
               style: TextStyle(
                 color: favorite.status == FavoriteStatus.watched
                     ? Colors.green
@@ -186,23 +189,24 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
         trailing: PopupMenuButton(
           itemBuilder: (context) => [
             if (favorite.status == FavoriteStatus.watchlist)
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'watched',
                 child: Row(
                   children: [
-                    Icon(Icons.check_circle),
-                    SizedBox(width: 8),
-                    Text('Marquer comme vu'),
+                    const Icon(Icons.check_circle),
+                    const SizedBox(width: 8),
+                    Text(context.tr('markAsWatched')),
                   ],
                 ),
               ),
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'delete',
               child: Row(
                 children: [
-                  Icon(Icons.delete, color: Colors.red),
-                  SizedBox(width: 8),
-                  Text('Supprimer', style: TextStyle(color: Colors.red)),
+                  const Icon(Icons.delete, color: Colors.red),
+                  const SizedBox(width: 8),
+                  Text(context.tr('delete'),
+                      style: const TextStyle(color: Colors.red)),
                 ],
               ),
             ),
@@ -223,18 +227,18 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Supprimer'),
-        content: Text('Supprimer "${favorite.title}" de vos favoris ?'),
+        title: Text(context.tr('delete')),
+        content: Text('${context.tr('deleteConfirm')}\n"${favorite.title}"'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Annuler'),
+            child: Text(context.tr('cancel')),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text(
-              'Supprimer',
-              style: TextStyle(color: Colors.red),
+            child: Text(
+              context.tr('delete'),
+              style: const TextStyle(color: Colors.red),
             ),
           ),
         ],
@@ -252,7 +256,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${favorite.title} supprimé'),
+            content: Text('${favorite.title} ${context.tr('deletedFromFavorites')}'),
             backgroundColor: Colors.green,
           ),
         );
@@ -261,7 +265,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur: $e'),
+            content: Text('${context.tr('error')}: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -287,8 +291,8 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
         );
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Film marqué comme vu'),
+            SnackBar(
+              content: Text(context.tr('markedAsWatched')),
               backgroundColor: Colors.green,
             ),
           );
@@ -297,7 +301,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Erreur: $e'),
+              content: Text('${context.tr('error')}: $e'),
               backgroundColor: Colors.red,
             ),
           );
@@ -329,11 +333,11 @@ class _RatingDialogState extends State<_RatingDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Noter le film'),
+      title: Text(context.tr('rateMovie')),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Votre note :'),
+          Text(context.tr('yourRating')),
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -351,9 +355,9 @@ class _RatingDialogState extends State<_RatingDialog> {
           const SizedBox(height: 16),
           TextField(
             controller: _commentController,
-            decoration: const InputDecoration(
-              labelText: 'Commentaire (optionnel)',
-              hintText: 'Votre avis sur le film...',
+            decoration: InputDecoration(
+              labelText: context.tr('comment'),
+              hintText: context.tr('yourOpinion'),
             ),
             maxLines: 3,
           ),
@@ -362,7 +366,7 @@ class _RatingDialogState extends State<_RatingDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Annuler'),
+          child: Text(context.tr('cancel')),
         ),
         ElevatedButton(
           onPressed: () {
@@ -373,7 +377,7 @@ class _RatingDialogState extends State<_RatingDialog> {
                   : _commentController.text.trim(),
             });
           },
-          child: const Text('Valider'),
+          child: Text(context.tr('validate')),
         ),
       ],
     );
