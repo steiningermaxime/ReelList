@@ -42,6 +42,23 @@ class TmdbApiService {
 
     return Movie.fromJson(response.data!);
   }
+
+  Future<List<Movie>> getPopularMovies({
+    String language = 'fr-FR',
+    int page = 1,
+  }) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/movie/popular',
+      queryParameters: {
+        'api_key': ApiConfig.tmdbApiKey,
+        'language': language,
+        'page': page,
+      },
+    );
+
+    final results = response.data?['results'] as List<dynamic>? ?? [];
+    return results.map((json) => Movie.fromJson(json as Map<String, dynamic>)).toList();
+  }
 }
 
 final tmdbApiServiceProvider = Provider<TmdbApiService>((ref) {

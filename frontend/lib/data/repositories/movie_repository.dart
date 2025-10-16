@@ -11,6 +11,8 @@ abstract class MovieRepository {
   });
 
   Future<Movie> getMovieDetails(int movieId, {String language = 'fr-FR'});
+
+  Future<List<Movie>> getPopularMovies({String language = 'fr-FR'});
 }
 
 class MovieRepositoryImpl implements MovieRepository {
@@ -68,6 +70,16 @@ class MovieRepositoryImpl implements MovieRepository {
       movieId: movieId,
       language: language,
     );
+  }
+
+  @override
+  Future<List<Movie>> getPopularMovies({String language = 'fr-FR'}) async {
+    try {
+      final movies = await apiService.getPopularMovies(language: language);
+      return movies;
+    } catch (e) {
+      rethrow;
+    }
   }
 }
 

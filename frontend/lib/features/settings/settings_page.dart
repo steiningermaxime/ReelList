@@ -3,14 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app.dart';
 import '../../core/app_theme.dart';
-import '../../core/i18n/app_localizations_delegate.dart';
+import '../../core/i18n/language_provider.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref.watch(localeProvider);
+    final locale = ref.watch(languageProvider);
     final themeMode = ref.watch(themeModeProvider);
 
     return Scaffold(
@@ -34,7 +34,7 @@ class SettingsPage extends ConsumerWidget {
               ],
               onChanged: (value) {
                 if (value != null) {
-                  ref.read(localeProvider.notifier).state = Locale(value);
+                  ref.read(languageProvider.notifier).setLanguage(value);
                 }
               },
             ),

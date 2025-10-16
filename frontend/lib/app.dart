@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/app_router.dart';
 import 'core/app_theme.dart';
-import 'core/i18n/app_localizations_delegate.dart';
+import 'core/i18n/language_provider.dart';
 
 final themeModeProvider = StateProvider<AppThemeMode>((ref) => AppThemeMode.system);
 
@@ -14,7 +14,7 @@ class ReelListApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
-    final locale = ref.watch(localeProvider);
+    final locale = ref.watch(languageProvider);
     final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp.router(
@@ -24,7 +24,10 @@ class ReelListApp extends ConsumerWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: _convertThemeMode(themeMode),
       locale: locale,
-      supportedLocales: AppLocales.supportedLocales,
+      supportedLocales: const [
+        Locale('fr'),
+        Locale('en'),
+      ],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
