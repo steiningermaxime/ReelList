@@ -8,21 +8,12 @@ Application mobile Flutter pour gérer vos films favoris.
 # Installer les dépendances
 flutter pub get
 
-# Générer les fichiers JSON (models)
-flutter pub run build_runner build --delete-conflicting-outputs
-
 # Lancer l'application
 flutter run
 ```
 
 ## 📝 Scripts utiles
 
-```bash
-# Régénérer les fichiers après modification des models
-flutter pub run build_runner build --delete-conflicting-outputs
-
-# Watch mode (régénération automatique)
-flutter pub run build_runner watch
 
 # Analyse du code
 flutter analyze
