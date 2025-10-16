@@ -20,7 +20,7 @@ class LocalStore {
 
   Future<void> init() async {
     await Hive.initFlutter();
-    
+
     _moviesBox = await Hive.openBox(HiveBoxNames.movies);
     _favoritesBox = await Hive.openBox(HiveBoxNames.favorites);
     _prefsBox = await Hive.openBox(HiveBoxNames.prefs);
@@ -96,21 +96,21 @@ class LocalStore {
   }
 
   String? getTheme() => get<String>(HiveBoxNames.prefs, PrefsKeys.theme);
-  
-  Future<void> setTheme(String theme) => 
+
+  Future<void> setTheme(String theme) =>
       put(HiveBoxNames.prefs, PrefsKeys.theme, theme);
 
   String? getLocale() => get<String>(HiveBoxNames.prefs, PrefsKeys.locale);
-  
-  Future<void> setLocale(String locale) => 
+
+  Future<void> setLocale(String locale) =>
       put(HiveBoxNames.prefs, PrefsKeys.locale, locale);
 
   String? getToken() => get<String>(HiveBoxNames.prefs, PrefsKeys.token);
-  
-  Future<void> setToken(String token) => 
+
+  Future<void> setToken(String token) =>
       put(HiveBoxNames.prefs, PrefsKeys.token, token);
-  
-  Future<void> clearToken() => 
+
+  Future<void> clearToken() =>
       delete(HiveBoxNames.prefs, PrefsKeys.token);
 
   Future<void> cacheMovies(Map<String, dynamic> movies) async {

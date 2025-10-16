@@ -11,11 +11,11 @@ class FavoritesApiService {
 
   Future<List<Favorite>> getFavorites({FavoriteStatus? status}) async {
     final queryParams = <String, dynamic>{};
-    
+
     if (status != null) {
       queryParams['status'] = 'eq.${status.name}';
     }
-    
+
     queryParams['select'] = '*';
     queryParams['order'] = 'added_at.desc';
 

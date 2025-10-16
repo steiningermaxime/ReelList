@@ -111,7 +111,7 @@ class CreateFavoriteDto {
     this.watchedAt,
   });
 
-  factory CreateFavoriteDto.fromJson(Map<String, dynamic> json) => 
+  factory CreateFavoriteDto.fromJson(Map<String, dynamic> json) =>
       _$CreateFavoriteDtoFromJson(json);
   Map<String, dynamic> toJson() => _$CreateFavoriteDtoToJson(this);
 }
@@ -133,7 +133,7 @@ class UpdateFavoriteDto {
     this.watchedAt,
   });
 
-  factory UpdateFavoriteDto.fromJson(Map<String, dynamic> json) => 
+  factory UpdateFavoriteDto.fromJson(Map<String, dynamic> json) =>
       _$UpdateFavoriteDtoFromJson(json);
   Map<String, dynamic> toJson() => _$UpdateFavoriteDtoToJson(this);
 }

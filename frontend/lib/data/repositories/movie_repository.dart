@@ -9,7 +9,7 @@ abstract class MovieRepository {
     required String query,
     String language = 'fr-FR',
   });
-  
+
   Future<Movie> getMovieDetails(int movieId, {String language = 'fr-FR'});
 }
 

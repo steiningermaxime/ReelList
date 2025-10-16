@@ -27,21 +27,21 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
   Future<List<Favorite>> getFavorites({FavoriteStatus? status}) async {
     try {
       final favorites = await apiService.getFavorites(status: status);
-      
+
       await localStore.cacheFavorites(
         favorites.map((f) => f.toJson()).toList(),
       );
-      
+
       return favorites;
     } catch (e) {
       final cached = localStore.getCachedFavorites();
       if (cached != null) {
         final favorites = cached.map((json) => Favorite.fromJson(json)).toList();
-        
+
         if (status != null) {
           return favorites.where((f) => f.status == status).toList();
         }
-        
+
         return favorites;
       }
       rethrow;
@@ -61,25 +61,25 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
     );
 
     final favorite = await apiService.createFavorite(dto);
-    
+
     await _updateCachedFavorites();
-    
+
     return favorite;
   }
 
   @override
   Future<Favorite> updateFavorite(String id, UpdateFavoriteDto dto) async {
     final favorite = await apiService.updateFavorite(id, dto);
-    
+
     await _updateCachedFavorites();
-    
+
     return favorite;
   }
 
   @override
   Future<void> deleteFavorite(String id) async {
     await apiService.deleteFavorite(id);
-    
+
     await _updateCachedFavorites();
   }
 
