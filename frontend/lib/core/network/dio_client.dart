@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../errors/app_exception.dart';
+import 'api_config.dart';
 
-class ApiConfig {
-  static const String baseUrl = 'http://localhost:3000';
+class DioConfig {
   static const Duration connectTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);
   static const int maxRetries = 3;
@@ -16,9 +16,9 @@ class ApiConfig {
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
     BaseOptions(
-      baseUrl: ApiConfig.baseUrl,
-      connectTimeout: ApiConfig.connectTimeout,
-      receiveTimeout: ApiConfig.receiveTimeout,
+      baseUrl: ApiConfig.supabaseUrl,
+      connectTimeout: DioConfig.connectTimeout,
+      receiveTimeout: DioConfig.receiveTimeout,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -48,11 +48,11 @@ class RetryInterceptor extends Interceptor {
 
     final retryCount = err.requestOptions.extra['retryCount'] as int? ?? 0;
 
-    if (retryCount >= ApiConfig.maxRetries) {
+    if (retryCount >= DioConfig.maxRetries) {
       return handler.next(err);
     }
 
-    final delay = ApiConfig.retryDelays[retryCount];
+    final delay = DioConfig.retryDelays[retryCount];
     await Future.delayed(Duration(milliseconds: delay));
 
     err.requestOptions.extra['retryCount'] = retryCount + 1;
